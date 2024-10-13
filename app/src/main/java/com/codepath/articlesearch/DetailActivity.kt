@@ -1,14 +1,14 @@
 package com.codepath.articlesearch
 
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 
-private const val TAG = "DetailActivity"
-
 class DetailActivity : AppCompatActivity() {
+
     private lateinit var mediaImageView: ImageView
     private lateinit var titleTextView: TextView
     private lateinit var bylineTextView: TextView
@@ -17,13 +17,48 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        initializeViews()
+        populateArticleDetails()
+        applyFadeInAnimation()
+    }
 
-        // TODO: Find the views for the screen
+    private fun initializeViews() {
+        mediaImageView = findViewById(R.id.mediaImage)
+        titleTextView = findViewById(R.id.mediaTitle)
+        bylineTextView = findViewById(R.id.mediaByline)
+        abstractTextView = findViewById(R.id.mediaAbstract)
+    }
 
-        // TODO: Get the extra from the Intent
+    private fun populateArticleDetails() {
+        val title = intent.getStringExtra("ARTICLE_EXTRA_TITLE")
+        val byline = intent.getStringExtra("ARTICLE_EXTRA_BYLINE")
+        val abstract = intent.getStringExtra("ARTICLE_EXTRA_ABSTRACT")
+        val mediaUrl = intent.getStringExtra("ARTICLE_EXTRA_MEDIA_URL")
 
-        // TODO: Set the title, byline, and abstract information from the article
+        setArticleText(title, byline, abstract)
+        loadMediaImage(mediaUrl)
+    }
 
-        // TODO: Load the media image
+    private fun setArticleText(title: String?, byline: String?, abstract: String?) {
+        titleTextView.text = title
+        bylineTextView.text = byline
+        abstractTextView.text = abstract
+    }
+
+    private fun loadMediaImage(mediaUrl: String?) {
+        if (!mediaUrl.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(mediaUrl)
+                .into(mediaImageView)
+        }
+    }
+
+    private fun applyFadeInAnimation() {
+        val fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+
+        mediaImageView.startAnimation(fadeInAnimation)
+        titleTextView.startAnimation(fadeInAnimation)
+        bylineTextView.startAnimation(fadeInAnimation)
+        abstractTextView.startAnimation(fadeInAnimation)
     }
 }
