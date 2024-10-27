@@ -21,7 +21,15 @@ data class Article(
     @SerialName("multimedia") val multimedia: List<MultiMedia>?
 ) {
     val mediaImageUrl: String
-        get() = "https://www.nytimes.com/${multimedia?.firstOrNull { it.url != null }?.url ?: ""}"
+        get() {
+            val url = multimedia?.firstOrNull { !it.url.isNullOrEmpty() }?.url
+            // Only prepend base URL if the URL is valid and not empty
+            return if (!url.isNullOrEmpty()) {
+                if (url.startsWith("http")) url else "https://www.nytimes.com/$url"
+            } else {
+                "" // Return an empty string if there’s no valid URL
+            }
+        }
 }
 
 @Serializable
